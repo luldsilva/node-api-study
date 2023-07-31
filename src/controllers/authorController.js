@@ -1,56 +1,53 @@
-import mongoose from "mongoose";
+/* eslint-disable no-unused-vars */
+import NotFound from "../errors/NotFound.js";
 import authors from "../models/Author.js";
 
 class AuthorController {
-  static authorList = async (req, res) => {
+  static authorList = async (req, res, next) => {
     try {
       res.status(200).json(await authors.find());
     } catch (err) {
-      res.status(500).json(err);
+      next(err);
     }
   };
 
-  static authorRegister = async (req, res) => {
+  static authorRegister = async (req, res, next) => {
     try {
       let author = new authors(req.body);
       await author.save();
       res.status(201).send(author.toJSON());
     } catch (err) {
-      res.status(500).send({ message: `${err} - falha ao cadastrar autor.` });
+      next(err);
     }
   };
 
-  static authorListPerId = async (req, res) => {
+  static authorListPerId = async (req, res, next) => {
     try {
       const id = req.params.id;
       const authorReturn = await authors.findById(id);
-      authorReturn !== null ? res.status(200).send(authorReturn) : res.status(404).send({ message: "Id do autor nao localizado" });
-    } catch (error) {
-      if (error instanceof mongoose.Error.CastError) {
-        res.status(400).send({ message: "Um ou mais dados fornecidos estao incorretos." });
-      } else {
-        res.status(500).send({ message: "Erro interno do servidor" });
-      }
+      authorReturn !== null ? res.status(200).send(authorReturn) : next(new NotFound("Id do autor nao localizado"));
+    } catch (err) {
+      next(err);
     }
   };
 
-  static authorUpdate = async (req, res) => {
+  static authorUpdate = async (req, res, next) => {
     try {
       const id = req.params.id;
       await authors.findByIdAndUpdate(id, { $set: req.body });
       res.status(200).send({ message: "Autor atualizado com sucesso!" });
     } catch (err) {
-      res.status(500).send({ message: err.message });
+      next(err);
     }
   };
 
-  static deleteAuthor = async (req, res) => {
+  static deleteAuthor = async (req, res, next) => {
     try {
       const id = req.params.id;
       await authors.findByIdAndDelete(id);
       res.status(200).send({ message: "Autor removido com sucesso!" });
     } catch (err) {
-      res.status(500).send({ message: err.message });
+      next(err);
     }
   };
 }
