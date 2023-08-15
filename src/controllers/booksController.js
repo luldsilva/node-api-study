@@ -1,6 +1,6 @@
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
-import books from "../models/Book.js";
+import { books } from "../models/index.js";
 
 class BookController {
   static booksList = async (req, res, next) => {

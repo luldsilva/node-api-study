@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import NotFound from "../errors/NotFound.js";
-import authors from "../models/Author.js";
+import { authors } from "../models/index.js";
 
 class AuthorController {
   static authorList = async (req, res, next) => {
