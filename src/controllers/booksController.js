@@ -1,20 +1,13 @@
 /* eslint-disable indent */
 /* eslint-disable no-unused-vars */
-import { books } from "../models/index.js";
+import { authors, books } from "../models/index.js";
 
 class BookController {
   static booksList = async (req, res, next) => {
     try {
-      res.status(200).json(await
-        books.find()
-          .populate("autor")
-          .then(book => {
-            res.status(200).json(book);
-          })
-          .catch(err => {
-            next(err);
-          })
-      );
+      const findBooks = books.find();
+      req.result = findBooks;
+      next();
     } catch (err) {
       next(err);
     }
@@ -66,15 +59,53 @@ class BookController {
     }
   };
 
-  static bookListPerPublisher = async (req, res, next) => {
+  static bookListPerFilter = async (req, res, next) => {
     try {
-      const publisher = req.query.editora;
-      let returnPublisher = await books.find({ "editora": publisher }, {});
-      res.status(200).send(returnPublisher);
+
+      const filter = await findProcess(req.query);
+
+      if (filter !== null) {
+        let booksResult = books
+          .find(filter)
+          .populate("autor");
+        req.result = booksResult;
+        next();
+      } else {
+        res.status(200).send([]);
+      }
     } catch (err) {
       next(err);
     }
   };
+}
+
+async function findProcess(params) {
+  const { editora, titulo, minPaginas, maxPaginas, numeroPaginas, nomeAutor } = params;
+
+  const regex = new RegExp(titulo, "i");
+
+  let filterForFind = {};
+
+  if (editora) filterForFind.editora = editora;
+  if (titulo) filterForFind.titulo = regex;
+
+  if (minPaginas || maxPaginas) filterForFind.numeroPaginas = {};
+  if (minPaginas) filterForFind.numeroPaginas.$gte = minPaginas;
+  if (maxPaginas) filterForFind.numeroPaginas.$lte = maxPaginas;
+
+  if (nomeAutor) {
+    const author = await authors.findOne({ nome: nomeAutor });
+
+
+    if (author !== null) {
+      filterForFind.autor = author._id;
+    } else {
+      filterForFind = null;
+    }
+
+  }
+
+  return filterForFind;
 }
 
 export default BookController;
