@@ -6,7 +6,6 @@ import handler404 from "./middlewares/handler404.js";
 
 db.on("error", console.log.bind(console, "Erro de conexao"));
 db.once("open", () => {
-  console.log("Conexao com o banco feita com sucesso");
 });
 
 const app = express();
