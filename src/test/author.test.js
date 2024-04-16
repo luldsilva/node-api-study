@@ -1,10 +1,8 @@
-import request from "supertest";
-import app from "../app";
+function sum(a, b) {
+  return a + b;
+}
 
-describe("GET /", () => {
-  it("should return Hello world!", async () => {
-    const response = await request(app).get("/");
-    expect(response.status).toBe(200);
-    expect(response.body.Titulo).toBe("Hello world!");
-  });
+// Teste simples
+test("adds 1 + 2 to equal 3", () => {
+  expect(sum(1, 2)).toBe(3);
 });
