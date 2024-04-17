@@ -23,14 +23,14 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: https://mcr.microsoft.com/
-        username: ${{ secrets.AzureAppService_ContainerUsername_83354e3b72d54e4c88e944b33bf18de3 }}
-        password: ${{ secrets.AzureAppService_ContainerPassword_c69dd0fc1b7e4349bb6624c266947fc9 }}
+        username: ${{ secrets.AzureAppService_ContainerUsername_673c9b3393d5440b948814b4a43e43bd }}
+        password: ${{ secrets.AzureAppService_ContainerPassword_b89f1b06656b478c924ffd3700381ba8 }}
 
     - name: Build and push container image to registry
       uses: docker/build-push-action@v3
       with:
         push: true
-        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_83354e3b72d54e4c88e944b33bf18de3 }}/appsvc/staticsite:${{ github.sha }}
+        tags: mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_673c9b3393d5440b948814b4a43e43bd }}/appsvc/staticsite:${{ github.sha }}
         file: ./Dockerfile
 
   deploy:
@@ -47,5 +47,5 @@ jobs:
       with:
         app-name: 'bookstore-web-app'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_13a86274d40d448ea9b91d289f34528b }}
-        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_83354e3b72d54e4c88e944b33bf18de3 }}/appsvc/staticsite:${{ github.sha }}'
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_bdd38265aac542f1aceec0cb3a2fc08a }}
+        images: 'mcr.microsoft.com/${{ secrets.AzureAppService_ContainerUsername_673c9b3393d5440b948814b4a43e43bd }}/appsvc/staticsite:${{ github.sha }}'
